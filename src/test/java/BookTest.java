@@ -60,4 +60,17 @@ public class BookTest {
   //   newBook.delete();
   //   assertEquals(myAuthor.getBooks().size(), 0);
   // }
+
+  @Test
+  public void getAuthors_returnsAllAuthorsAssociatedWithThisBook_List() {
+    Author newAuthor = new Author("Author author");
+    newAuthor.save();
+
+    Book myBook = new Book("Jumping Rope", 1);
+    myBook.save();
+
+    myBook.addAuthor(newAuthor);
+    List savedAuthors = myBook.getAuthors();
+    assertEquals(savedAuthors.size(), 1);
+  }
 }
