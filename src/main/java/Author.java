@@ -75,7 +75,7 @@ import org.sql2o.*;
             .addParameter("id", id)
             .executeUpdate();
 
-        String joinDeleteQuery = "DELETE FROM authors WHERE author_id=:author_id";
+        String joinDeleteQuery = "DELETE FROM books_authors WHERE author_id=:author_id";
           con.createQuery(joinDeleteQuery)
             .addParameter("author_id", this.getId())
             .executeUpdate();

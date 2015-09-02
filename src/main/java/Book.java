@@ -100,7 +100,6 @@ public class Book {
     }
   }
 
-
   public List<Author> getAuthors() {
     try(Connection con = DB.sql2o.open()){
       String sql = "SELECT authors.* FROM books JOIN books_authors ON (books.id = books_authors.book_id) JOIN authors ON (books_authors.author_id = authors.id) where books.id= :book_id;";

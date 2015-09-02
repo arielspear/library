@@ -48,18 +48,18 @@ public class BookTest {
     assertTrue(Book.all().get(0).getCopies() == copies);
   }
 
-  // @Test
-  // public void delete_deletesAllBooksAndListAssociations() {
-  //   Author myAuthor = new Author("Maggie Mags");
-  //   myAuthor.save();
-  //
-  //   Book newBook = new Book("Childcare");
-  //   newBook.save();
-  //
-  //   newBook.addAuthor(myAuthor);
-  //   newBook.delete();
-  //   assertEquals(myAuthor.getBooks().size(), 0);
-  // }
+  @Test
+  public void delete_deletesAllBooksAndListAssociations() {
+    Author myAuthor = new Author("Maggie Mags");
+    myAuthor.save();
+
+    Book newBook = new Book("Childcare", 1);
+    newBook.save();
+
+    newBook.addAuthor(myAuthor);
+    newBook.delete();
+    assertEquals(myAuthor.getBooks().size(), 0);
+  }
 
   @Test
   public void getAuthors_returnsAllAuthorsAssociatedWithThisBook_List() {
