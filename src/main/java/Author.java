@@ -75,9 +75,32 @@ import org.sql2o.*;
             .addParameter("id", id)
             .executeUpdate();
 
-            //joined delete statement for books goes here
+        String joinDeleteQuery = "DELETE FROM authors WHERE author_id=:author_id";
+          con.createQuery(joinDeleteQuery)
+            .addParameter("author_id", this.getId())
+            .executeUpdate();
       }
     }
+
+    public void addBook(Book books) {
+      try(Connection con = DB.sql2o.open()) {
+        String sql = "INSERT INTO books_authors (book_id, author_id) VALUES (:book_id, :author_id)";
+          con.createQuery(sql)
+          .addParameter("book_id", books.getId())
+          .addParameter("author_id", this.getId())
+          .executeUpdate();
+      }
+    }
+
+    public List<Book> getBooks() {
+      try(Connection con = DB.sql2o.open()){
+        String sql = "SELECT books.* FROM authors JOIN books_authors ON (authors.id = books_authors.author_id) JOIN books ON (books_authors.book_id = books.id) where authors.id= :author_id;";
+        List<Book> books = con.createQuery(sql)
+        .addParameter("author_id", this.getId())
+        .executeAndFetch(Book.class);
+      return books;
+    }
+  }
 
 
   }//ends class
