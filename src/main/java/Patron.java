@@ -4,6 +4,7 @@ import org.sql2o.*;
   public class Patron {
     private int id;
     private String patron_name;
+    // private String due_date;
 
     public int getId() {
       return id;
@@ -16,6 +17,10 @@ import org.sql2o.*;
     public Patron(String patron_name) {
       this.patron_name = patron_name;
     }
+
+    // public String getDueDate() {
+    //   return due_date;
+    // }
 
     @Override
     public boolean equals(Object otherPatron) {
@@ -55,8 +60,8 @@ import org.sql2o.*;
     }
 
     public  void checkoutBook(Book book, String due_date) {
-      try(Connection con = DB.sql2o.open()){
-        String sql = "INSERT INTO checkouts (patron_id, book_id, due_date) VALUES (:patron_id, :author_id, :due_date);";
+      try(Connection con = DB.sql2o.open()) {
+        String sql = "INSERT INTO checkouts (patron_id, book_id, due_date) VALUES (:patron_id, :book_id, :due_date);";
            con.createQuery(sql)
           .addParameter("patron_id", this.getId())
           .addParameter("book_id", book.getId())
@@ -66,5 +71,39 @@ import org.sql2o.*;
       }
     }
 
+    public void update(String patron_name) {
+      this.patron_name = patron_name;
+      try(Connection con = DB.sql2o.open()) {
+        String sql = "UPDATE patrons SET patron_name=:patron_name WHERE id=:id";
+          con.createQuery(sql)
+            .addParameter("patron_name", patron_name)
+            .addParameter("id", id)
+            .executeUpdate();
+      }
+    }
 
-  }
+    public void delete() {
+      try(Connection con = DB.sql2o.open()) {
+        String deleteQuery = "DELETE FROM patrons WHERE id=:id";
+          con.createQuery(deleteQuery)
+            .addParameter("id", id)
+            .executeUpdate();
+
+        String joinDeleteQuery = "DELETE FROM checkouts WHERE patron_id=:patron_id";
+          con.createQuery(joinDeleteQuery)
+          .addParameter("patron_id", this.getId())
+          .executeUpdate();
+      }
+    }
+
+    public List<Book> checkedOut() {
+      try(Connection con = DB.sql2o.open()){
+      String sql = "SELECT books.* FROM patrons JOIN checkouts ON (patrons.id = checkouts.patron_id) JOIN books ON (checkouts.book_id = books.id) WHERE patrons.id= :patrons_id;";
+           List<Book> books = con.createQuery(sql)
+          .addParameter("patron_id", this.getId())
+          .executeAndFetch(Book.class);
+        return books;
+      }
+    }
+
+  }//end of class

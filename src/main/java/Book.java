@@ -6,6 +6,7 @@ public class Book {
   private String title;
   private int copies;
 
+
   public int getId() {
     return id;
   }
@@ -108,7 +109,27 @@ public class Book {
         .executeAndFetch(Author.class);
       return authors;
     }
-}
+  }
+
+  public void addPatron(Patron patron) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "INSERT INTO checkouts (book_id, patron_id) VALUES (:book_id, :patron_id)";
+      con.createQuery(sql)
+      .addParameter("patron_id", patron.getId())
+      .addParameter("book_id", this.getId())
+      .executeUpdate();
+    }
+  }
+
+  public List<Patron> getPatrons() {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT patrons.* FROM books JOIN checkouts ON (books.id = checkouts.book_id) JOIN patrons ON (checkouts.patron_id = patrons.id) WHERE books.id= :book_id;";
+      List<Patron> patrons = con.createQuery(sql)
+      .addParameter("book_id", this.getId())
+      .executeAndFetch(Patron.class);
+    return patrons;
+    }
+  }
 
 
 

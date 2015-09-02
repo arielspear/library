@@ -34,4 +34,30 @@ public class PatronTest {
     Patron savedPatron = Patron.find(newPatron.getId());
     assertTrue(newPatron.equals(savedPatron));
   }
+
+  @Test
+  public void update_updatesPatronNameInDatabase_true() {
+    Patron newPatron = new Patron("Morgan");
+    newPatron.save();
+
+    String name = "Ariel";
+
+    newPatron.update(name);
+    assertTrue(Patron.all().get(0).getPatronName().equals(name));
+  }
+
+  @Test
+  public void delete_deletesPatronAndListAssociations() {
+    Patron newPatron = new Patron("Morgan");
+    newPatron.save();
+
+    Book myBook = new Book("Frog chasing", 1);
+    myBook.save();
+    String duedate = "whenever";
+
+    newPatron.checkoutBook(myBook, duedate);
+    System.out.println(myBook.getId());
+    newPatron.delete();
+    assertEquals(myBook.getPatrons().size(), 0);
+  }
 }
