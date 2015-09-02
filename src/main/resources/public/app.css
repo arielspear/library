@@ -1,0 +1,16 @@
+.container {
+  margin-top:50px;
+
+}
+h1 {
+  font-size: 65px;
+  font-family: 'Dancing Script', cursive;
+  text-align: center;
+  color: #ff69b4;
+}
+.admin-link,
+.books-link,
+.patron-link {
+  padding: 5px;
+  font-size:24px
+}
