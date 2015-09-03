@@ -115,7 +115,7 @@ public class App {
       newAuthor.save();
       // newAuthor.addBook(newBook);
 
-      response.redirect("/new-author");
+      response.redirect("/admin");
       return null;
     });
 
@@ -136,8 +136,8 @@ public class App {
       String title = request.queryParams("title");
       int copies = Integer.parseInt(request.queryParams("copies"));
       int bookId = Integer.parseInt(request.params(":id"));
-      int test = 2;
-      book.update(title, test);
+
+      book.update(title, copies);
 
       response.redirect("/admin");
       return null;
