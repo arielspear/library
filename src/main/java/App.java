@@ -19,6 +19,7 @@ public class App {
     get("/admin", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
 
+      model.put("patrons", Patron.all());
       model.put("books", Book.all());
       model.put("authors", Author.all());
       model.put("template", "templates/admin.vtl");
@@ -39,19 +40,50 @@ public class App {
     get("/new-patron", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
 
-      model.put("template", "templates/new-account-form.vtl");
+      model.put("template", "templates/new-patron.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    post("/add-patron", (request, response) -> {
+    post("/new-patron", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("patron_name");
       Patron newPatron = new Patron(name);
       newPatron.save();
-
-      response.redirect("/admin-book");
+      int patronId = newPatron.getId();
+      response.redirect("/welcome/"+ patronId);
       return null;
     });
+
+    //get page for welcoming a new patron
+    get("/welcome/:id", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Patron patron = Patron.find(Integer.parseInt(request.params(":id")));
+      model.put("patron", patron);
+      model.put("template", "templates/welcome.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    //get page to show all books to patrons
+    get("/welcome/:id/all-books", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Patron patron = Patron.find(Integer.parseInt(request.params(":id")));
+      model.put("books", Book.all());
+      model.put("patron", patron);
+      model.put("template", "templates/all-books.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    //get page to show librarian how many books patron has
+    get("/patrons/:id/check-books", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Patron patron = Patron.find(Integer.parseInt(request.params(":id")));
+
+      model.put("books", Book.all());
+      model.put("patron", patron);
+      //model.put("patron_books", patron.checkedOut());
+      model.put("template", "templates/patrons-books.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
     //get and post for adding a new book
     get("/new-book", (request, response) -> {
@@ -108,12 +140,8 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("name");
 
-      // int bookId = Integer.parseInt(request.queryParams("book_id"));
-      // Book newBook = Book.find(bookId);
-
       Author newAuthor = new Author(name);
       newAuthor.save();
-      // newAuthor.addBook(newBook);
 
       response.redirect("/admin");
       return null;
@@ -165,7 +193,7 @@ public class App {
 
       book.delete();
 
-      response.redirect("/admin-book");
+      response.redirect("/admin");
       return null;
     });
 
@@ -213,10 +241,11 @@ public class App {
 
       author.delete();
 
-      response.redirect("/admin-author");
+      response.redirect("/admin");
       return null;
     });
 
+    //get all books for specific author for patrons
     get("/authors/:id/all-books", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Author author = Author.find(Integer.parseInt(request.params(":id")));
@@ -225,5 +254,19 @@ public class App {
       model.put("template", "templates/show-author-books.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
+
+    //checkout a book get/post routes
+    get("welcome/:patron_id/books/:id/checkout", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Book book = Book.find(Integer.parseInt(request.params(":id")));
+      Patron patron = Patron.find(Integer.parseInt(request.params(":patron_id")));
+      model.put("book", book);
+      model.put("patron", patron);
+      model.put("books", Book.all());
+      model.put("template", "templates/checkout.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+
   }
 }

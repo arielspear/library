@@ -1,0 +1,9 @@
+<h1>Click on a book to reserve it</h1>
+
+<a href="/show-author-books">Search books by author</a>
+
+  #foreach($book in $books)
+    <ul>
+      <li><a href="welcome/$patron.getId()/books/$book.getId()/checkout">$book.getTitle()</a></li>
+    </ul>
+  #end

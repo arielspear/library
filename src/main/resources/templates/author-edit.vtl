@@ -28,6 +28,10 @@
         <button type="submit">submit</button>
       </form>
 
+      <form action="/authors/$author.getId()/delete" method="post">
+        <button type="submit" class="btn btn-danger $author.getAuthorName()">Delete $author.getAuthorName()</button>
+      </form>
+
       <p><a href='/'>Home</a></p>
       <p><a href='/admin'>Back to Admin</a></p>
     </div>

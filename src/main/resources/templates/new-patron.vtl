@@ -7,15 +7,12 @@
 
     <form action="/new-patron" method="post">
       <div class="form-group">
-        <label for="patron_name">Book Title</label>
+        <label for="patron_name">Your name</label>
         <input id="patron_name" name="patron_name" type="text" class="form-control" required>
       </div>
       <button type="submit">Sign Up!</button>
     </form>
 
-    #foreach ($patron in $patrons)
-      <li><a href="/patrons/$patron.getId()">Patron name: $patron.getPatronName()</a></li>
-    #end
 
     <p><a href='/'>Home</a></p>
     <p><a href='/admin'>Back to Admin</a></p>

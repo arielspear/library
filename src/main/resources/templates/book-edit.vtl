@@ -33,6 +33,10 @@
         <button type="submit" class="btn test">submit</button>
       </form>
 
+      <form action="/books/$book.getId()/delete" method="post">
+        <button type="submit" class="btn btn-danger $book.getTitle()">Delete $book.getTitle()</button>
+      </form>
+
       <p><a href='/'>Home</a></p>
       <p><a href='/admin'>Back to Admin</a></p>
     </div>

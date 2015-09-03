@@ -26,7 +26,11 @@
   <div class="col-md-4">
     <h2>All Patrons</h2>
     #foreach ($patron in $patrons)
-      <li><a href="/patrons/$patron.getId()">$patron.getPatronName()</a></li>
+      <li>
+        <center>
+        <a href="/patrons/$patron.getId()/check-books">$patron.getPatronName()</a>
+        </center>
+      </li>
     #end
   </div>
 <div class="row">

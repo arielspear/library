@@ -18,9 +18,9 @@ import org.sql2o.*;
       this.patron_name = patron_name;
     }
 
-    // public String getDueDate() {
-    //   return due_date;
-    // }
+    //public String getDueDate() {
+    //  return due_date;
+    //}
 
     @Override
     public boolean equals(Object otherPatron) {
@@ -98,7 +98,7 @@ import org.sql2o.*;
 
     public List<Book> checkedOut() {
       try(Connection con = DB.sql2o.open()){
-      String sql = "SELECT books.* FROM patrons JOIN checkouts ON (patrons.id = checkouts.patron_id) JOIN books ON (checkouts.book_id = books.id) WHERE patrons.id= :patrons_id;";
+      String sql = "SELECT books.* FROM patrons JOIN checkouts ON (patrons.id = checkouts.patron_id) JOIN books ON (checkouts.book_id = books.id) WHERE patrons.id= :patron_id;";
            List<Book> books = con.createQuery(sql)
           .addParameter("patron_id", this.getId())
           .executeAndFetch(Book.class);

@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <h1>$patron.getPatronName()</h1>
+
+    <p>Checkedout Books:</p>
+
+  #foreach($book in $patron.checkedOut())
+    <div class="well">
+      <ul>
+        <li><span>$book.getTitle()</span>
+          #foreach($author in $book.getAuthors())
+           <span>by $author.getAuthorName()</span>
+           #end
+        </li>
+
+      </ul>
+    </div>
+  #end
+
+    <p class="links btn-primary btn-home btn"><a href='/'>Home</a></p>
+    <p class="links btn-primary btn-home btn"><a href='/all-books'>See all books</a></p>
+  </div>
+  <div class="col-md-3"></div>
+</div>
