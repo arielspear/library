@@ -16,6 +16,10 @@ h2 {
   color:#eec0ff;
 }
 
+li {
+  list-style: none;
+}
+
 .admin-link,
 .books-link,
 .patron-link {

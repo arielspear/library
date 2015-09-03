@@ -65,14 +65,34 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String title = request.queryParams("title");
       int copies = Integer.parseInt(request.queryParams("copies"));
-      int authorId = Integer.parseInt(request.queryParams("author_id"));
-      Author newAuthor = Author.find(authorId);
+      // int authorId = Integer.parseInt(request.queryParams("author_id"));
+      // Author newAuthor = Author.find(authorId);
 
       Book newBook = new Book(title, copies);
       newBook.save();
-      newBook.addAuthor(newAuthor);
+      // newBook.addAuthor(newAuthor);
 
-      response.redirect("/admin-book");
+      response.redirect("/new-book");
+      return null;
+    });
+
+    //get and post for adding authors to books
+    get("/books/:id/add-author", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Author author = Author.find(Integer.parseInt(request.params(":id")));
+      model.put("author", author);
+      model.put("template", "templates/author-edit.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/books/:id/add-author", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Author author = Author.find(Integer.parseInt(request.params(":id")));
+      String name = request.queryParams("name");
+
+      author.update(name);
+
+      response.redirect("/admin-author");
       return null;
     });
 
@@ -88,14 +108,14 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("name");
 
-      int bookId = Integer.parseInt(request.queryParams("book_id"));
-      Book newBook = Book.find(bookId);
+      // int bookId = Integer.parseInt(request.queryParams("book_id"));
+      // Book newBook = Book.find(bookId);
 
       Author newAuthor = new Author(name);
       newAuthor.save();
-      newAuthor.addBook(newBook);
+      // newAuthor.addBook(newBook);
 
-      response.redirect("/admin-author");
+      response.redirect("/new-author");
       return null;
     });
 
@@ -103,6 +123,8 @@ public class App {
     get("/books/:id/edit", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Book book = Book.find(Integer.parseInt(request.params(":id")));
+
+      model.put("authors", Author.all());
       model.put("book", book);
       model.put("template", "templates/book-edit.vtl");
       return new ModelAndView(model, layout);
@@ -113,16 +135,30 @@ public class App {
       Book book = Book.find(Integer.parseInt(request.params(":id")));
       String title = request.queryParams("title");
       int copies = Integer.parseInt(request.queryParams("copies"));
-      // int authorId = Integer.parseInt(request.queryParams("author_id"));
-      // Author newAuthor = Author.find(authorId);
+      int bookId = Integer.parseInt(request.params(":id"));
+      int test = 2;
+      book.update(title, test);
 
-      book.update(title, copies);
-      // book.addAuthor(newAuthor);
-
-      response.redirect("/admin-book");
+      response.redirect("/admin");
       return null;
     });
 
+    //post to add authors to book
+    post("/books/:id/add-authors-to-book", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Book book = Book.find(Integer.parseInt(request.params(":id")));
+      int bookId = Integer.parseInt(request.params(":id"));
+
+      int authorId = Integer.parseInt(request.queryParams("author_id"));
+      Author newAuthor = Author.find(authorId);
+
+      book.addAuthor(newAuthor);
+
+      response.redirect("/admin");
+      return null;
+    });
+
+    //post to delete book
     post("/books/:id/delete", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Book book = Book.find(Integer.parseInt(request.params(":id")));
@@ -137,6 +173,8 @@ public class App {
     get("/authors/:id/edit", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Author author = Author.find(Integer.parseInt(request.params(":id")));
+
+      model.put("books", Book.all());
       model.put("author", author);
       model.put("template", "templates/author-edit.vtl");
       return new ModelAndView(model, layout);
@@ -146,13 +184,29 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Author author = Author.find(Integer.parseInt(request.params(":id")));
       String name = request.queryParams("name");
-
+      int authorId = Integer.parseInt(request.params(":id"));
       author.update(name);
 
-      response.redirect("/admin-author");
+      response.redirect("/authors/" + authorId + "/edit");
       return null;
     });
 
+    //post to add books to authors
+    post("/authors/:id/add-books-to-author", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Author author = Author.find(Integer.parseInt(request.params(":id")));
+      int authorId = Integer.parseInt(request.params(":id"));
+
+      int bookId = Integer.parseInt(request.queryParams("book_id"));
+      Book newBook = Book.find(bookId);
+
+      author.addBook(newBook);
+
+      response.redirect("/admin");
+      return null;
+    });
+
+    //post to delete author
     post("/authors/:id/delete", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Author author = Author.find(Integer.parseInt(request.params(":id")));
@@ -163,5 +217,13 @@ public class App {
       return null;
     });
 
+    get("/authors/:id/all-books", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Author author = Author.find(Integer.parseInt(request.params(":id")));
+
+      model.put("author", author);
+      model.put("template", "templates/show-author-books.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
   }
 }

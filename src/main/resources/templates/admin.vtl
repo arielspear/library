@@ -6,23 +6,27 @@
      <p class="link btn-primary btn"><a href='/new-book'>Add Book</a></p>
    </center>
     #foreach ($book in $books)
-      <li><a href="/books/$book.getId()">Title: $book.getTitle() Number of copies: $book.getCopies()</a></li>
+      <li><a href="/books/$book.getId()/edit">$book.getTitle() - Copies: $book.getCopies()</a></li>
     #end
   </div>
   <div class="col-md-4">
-    <h2>All Available Authors</h2>
+    <h2>Authors</h2>
     <center>
       <p class="link btn-primary btn"><a href='/new-author'>Add Author</a></p>
     </center>
     #foreach ($author in $authors)
-      <li><a href="/authors/$author.getId()">Author Name: $author.getName()</a></li>
+      <li>
+        <center>
+        <a href="/authors/$author.getId()/edit">$author.getAuthorName()</a>
+        </center>
+        </li>
     #end
   </div>
 
   <div class="col-md-4">
     <h2>All Patrons</h2>
     #foreach ($patron in $patrons)
-      <li><a href="/patrons/$patron.getId()">Patron name: $patron.getPatronName()</a></li>
+      <li><a href="/patrons/$patron.getId()">$patron.getPatronName()</a></li>
     #end
   </div>
 <div class="row">
