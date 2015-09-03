@@ -13,6 +13,10 @@
       <button type="submit">Sign Up!</button>
     </form>
 
+    #foreach ($patron in $patrons)
+      <li><a href="/patrons/$patron.getId()">Patron name: $patron.getPatronName()</a></li>
+    #end
+
     <p><a href='/'>Home</a></p>
     <p><a href='/admin'>Back to Admin</a></p>
   </div>

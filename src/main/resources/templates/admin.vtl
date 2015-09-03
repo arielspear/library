@@ -1,0 +1,36 @@
+<div class="row">
+  <h1>Unicorn University Library Admin Page</h1>
+  <div class="col-md-4">
+    <h2>All Available Books</h2>
+    <center>
+     <p class="link btn-primary btn"><a href='/new-book'>Add Book</a></p>
+   </center>
+    #foreach ($book in $books)
+      <li><a href="/books/$book.getId()">Title: $book.getTitle() Number of copies: $book.getCopies()</a></li>
+    #end
+  </div>
+  <div class="col-md-4">
+    <h2>All Available Authors</h2>
+    <center>
+      <p class="link btn-primary btn"><a href='/new-author'>Add Author</a></p>
+    </center>
+    #foreach ($author in $authors)
+      <li><a href="/authors/$author.getId()">Author Name: $author.getName()</a></li>
+    #end
+  </div>
+
+  <div class="col-md-4">
+    <h2>All Patrons</h2>
+    #foreach ($patron in $patrons)
+      <li><a href="/patrons/$patron.getId()">Patron name: $patron.getPatronName()</a></li>
+    #end
+  </div>
+<div class="row">
+  <div class="col-md-12">
+  <center>
+    <hr>
+   <p class="links btn-primary btn-home btn"><a href='/'>Home</a></p>
+ </center>
+</div>
+</div>
+</div>
