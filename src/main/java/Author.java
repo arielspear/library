@@ -26,7 +26,8 @@ import org.sql2o.*;
         return false;
       } else {
         Author newAuthor = (Author) otherAuthor;
-        return this.getAuthorName().equals(newAuthor.getAuthorName());
+        return this.getAuthorName().equals(newAuthor.getAuthorName()) &&
+               this.getId() == newAuthor.getId();
       }
     }
 
@@ -100,6 +101,30 @@ import org.sql2o.*;
         .executeAndFetch(Book.class);
       return books;
     }
+  }
+
+  public static findByName(String name) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM patrons WHERE patron_name ilike :name";
+      Patron patron = con.createQuery(sql)
+        .addParameter("name", name)
+        .executeAndFetchFirst(Patron.class);
+      return patron;
+    }
+  }
+
+  private static String hashPassword(String password) {
+    String sha1 = "";
+    try {
+        MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+        crypt.reset();
+        crypt.update(password.getBytes("UTF-8"));
+        sha1 = byteToHex(crypt.digest());
+    } catch(NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    } catch(UnsupportedEncodingException e) {
+        e.printStackTrace();
+    } return sha1;
   }
 
 

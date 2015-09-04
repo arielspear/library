@@ -40,6 +40,7 @@ public class App {
     get("/new-patron", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
 
+
       model.put("template", "templates/new-patron.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
@@ -47,8 +48,19 @@ public class App {
     post("/new-patron", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("patron_name");
-      Patron newPatron = new Patron(name);
-      newPatron.save();
+      //check for duplicate user
+      String isDuplicateUser = Patron.findByName(name);
+        if(isDuplicateUser > 0) {
+
+          model.put("error", )
+        } else {
+          Patron newPatron = new Patron(name);
+        }
+
+      //get user password
+      String password = request.queryParams("password");
+      //save user password
+      newPatron.save(password);
       int patronId = newPatron.getId();
       response.redirect("/welcome/"+ patronId);
       return null;

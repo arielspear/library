@@ -28,7 +28,8 @@ import org.sql2o.*;
         return false;
       } else {
         Patron newPatron = (Patron) otherPatron;
-        return this.getPatronName().equals(newPatron.getPatronName());
+        return this.getPatronName().equals(newPatron.getPatronName()) &&
+               this.getId() == newPatron.getId();
       }
     }
 
@@ -40,8 +41,12 @@ import org.sql2o.*;
     }
 
     public void save() {
+      String salt = Patron.hashPassword(this.patron_name + currenttime);
+      String hashedPassword = Patron.hashPassword(salt + password);
+
+
       try(Connection con = DB.sql2o.open()) {
-        String sql = "INSERT INTO patrons (patron_name) VALUES (:patron_name)";
+        String sql = "INSERT INTO patrons (patron_name, password, salt) VALUES (:patron_name, :password, :salt)";
         this.id = (int) con.createQuery(sql, true)
           .addParameter("patron_name", this.patron_name)
           .executeUpdate()
@@ -106,4 +111,28 @@ import org.sql2o.*;
       }
     }
 
+    public static findByName(String name) {
+      try(Connection con = DB.sql2o.open()) {
+        String sql = "SELECT * FROM patrons WHERE patron_name ilike :name";
+        Patron patron = con.createQuery(sql)
+          .addParameter("name", name)
+          .executeAndFetchFirst(Patron.class);
+        return patron;
+      }
+    }
+
+    private static String hashPassword(String password) {
+      String sha1 = "";
+      // try {
+          MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+          crypt.reset();
+          crypt.update(password.getBytes("UTF-8"));
+          sha1 = byteToHex(crypt.digest());
+      // } catch(NoSuchAlgorithmException e) {
+      //     e.printStackTrace();
+      // } catch(UnsupportedEncodingException e) {
+      //     e.printStackTrace();
+      //}
+      return sha1;
+    }
   }//end of class
