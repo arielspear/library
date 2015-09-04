@@ -40,15 +40,16 @@ import org.sql2o.*;
       }
     }
 
-    public void save() {
-      String salt = Patron.hashPassword(this.patron_name + currenttime);
+    public void save(String password) {
+      String salt = Patron.hashPassword(String.format("%s%d", this.patron_name, System.getmiliseconds()));
       String hashedPassword = Patron.hashPassword(salt + password);
-
 
       try(Connection con = DB.sql2o.open()) {
         String sql = "INSERT INTO patrons (patron_name, password, salt) VALUES (:patron_name, :password, :salt)";
         this.id = (int) con.createQuery(sql, true)
           .addParameter("patron_name", this.patron_name)
+          .addParameter("password", password)
+          .addParameter("salt", salt)
           .executeUpdate()
           .getKey();
       }
