@@ -40,8 +40,9 @@ import org.sql2o.*;
       }
     }
 
+    // TODO: check if password meets minimum length requirements and, if it doesn't, throw an Exception.
     public void save(String password) {
-      String salt = Patron.hashPassword(String.format("%s%d", this.patron_name, System.getmiliseconds()));
+      String salt = Patron.hashPassword(String.format("%s%d", this.patron_name, System.currentTimeMillis()));
       String hashedPassword = Patron.hashPassword(salt + password);
 
       try(Connection con = DB.sql2o.open()) {
@@ -112,6 +113,7 @@ import org.sql2o.*;
       }
     }
 
+    // FIXME: the return type for executeAndFetch should match the type specific by List<> (don't use List.class)
     public static findByName(String name) {
       try(Connection con = DB.sql2o.open()) {
         String sql = "SELECT * FROM patrons WHERE patron_name ilike :name";
