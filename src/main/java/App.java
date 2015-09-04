@@ -51,6 +51,10 @@ public class App {
       //check for duplicate user
       List<Patron> patrons = Patron.findByName(name);
         if(!patrons.isEmpty()) {
+          model.put("error", "This username already exists");
+          model.put("template", "templates/welcome.vtl");
+          return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
 
           ????? )
         } else {
@@ -59,7 +63,7 @@ public class App {
 
       //get user password
       String password = request.queryParams("password");
-      //save user password
+      //save user password //need trycatch logic //save must throw an execption if password.length<min_password_length
       newPatron.save(password);
       int patronId = newPatron.getId();
       response.redirect("/welcome/"+ patronId);
