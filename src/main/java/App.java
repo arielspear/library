@@ -48,18 +48,18 @@ public class App {
     post("/new-patron", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("patron_name");
+      
       //check for duplicate user
       List<Patron> patrons = Patron.findByName(name);
-        if(!patrons.isEmpty()) {
-          model.put("error", "This username already exists");
-          model.put("template", "templates/welcome.vtl");
-          return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
 
-          ????? )
-        } else {
-          Patron newPatron = new Patron(name);
-        }
+      if(!patrons.isEmpty()) {
+        model.put("error", "This username already exists");
+        model.put("template", "templates/new-patron.vtl");
+
+        return new ModelAndView(model, layout);
+      } else {
+        Patron newPatron = new Patron(name);
+      }
 
       //get user password
       String password = request.queryParams("password");
@@ -68,7 +68,7 @@ public class App {
       int patronId = newPatron.getId();
       response.redirect("/welcome/"+ patronId);
       return null;
-    });
+    }, new VelocityTemplateEngine());
 
     //get page for welcoming a new patron
     get("/welcome/:id", (request, response) -> {
