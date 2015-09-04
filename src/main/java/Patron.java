@@ -115,10 +115,10 @@ import org.sql2o.*;
     public static findByName(String name) {
       try(Connection con = DB.sql2o.open()) {
         String sql = "SELECT * FROM patrons WHERE patron_name ilike :name";
-        Patron patron = con.createQuery(sql)
+        List<Patron> patrons = con.createQuery(sql)
           .addParameter("name", name)
-          .executeAndFetchFirst(Patron.class);
-        return patron;
+          .executeAndFetch(List.class);
+        return patrons;
       }
     }
 

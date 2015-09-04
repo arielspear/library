@@ -49,10 +49,10 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String name = request.queryParams("patron_name");
       //check for duplicate user
-      String isDuplicateUser = Patron.findByName(name);
-        if(isDuplicateUser > 0) {
+      List<Patron> patrons = Patron.findByName(name);
+        if(!patrons.isEmpty()) {
 
-          model.put("error", )
+          ????? )
         } else {
           Patron newPatron = new Patron(name);
         }
